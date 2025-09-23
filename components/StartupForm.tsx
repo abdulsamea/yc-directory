@@ -8,14 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
 import { formSchema } from "@/lib/validation";
 import { z } from "zod";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { createPitch } from "@/lib/actions";
 
 const StartupForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [pitch, setPitch] = useState("");
-  const { toast } = useToast();
   const router = useRouter();
 
   const handleFormSubmit = async (prevState: any, formData: FormData) => {
@@ -33,8 +32,7 @@ const StartupForm = () => {
       const result = await createPitch(prevState, formData, pitch);
 
       if (result.status == "SUCCESS") {
-        toast({
-          title: "Success",
+        toast.success("Success", {
           description: "Your startup pitch has been created successfully",
         });
 
@@ -47,20 +45,15 @@ const StartupForm = () => {
         const fieldErorrs = error.flatten().fieldErrors;
 
         setErrors(fieldErorrs as unknown as Record<string, string>);
-
-        toast({
-          title: "Error",
+        toast.error("Error", {
           description: "Please check your inputs and try again",
-          variant: "destructive",
         });
 
         return { ...prevState, error: "Validation failed", status: "ERROR" };
       }
 
-      toast({
-        title: "Error",
+      toast.error("Success", {
         description: "An unexpected error has occurred",
-        variant: "destructive",
       });
 
       return {
